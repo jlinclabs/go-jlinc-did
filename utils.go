@@ -45,3 +45,7 @@ func b58Encode(h []byte) string {
 func b58tob64(s string) string {
 	return b64Encode(b58Decode(s))
 }
+
+func b64tob58(s string) string {
+	return b58Encode(b64Decode(s))
+}
