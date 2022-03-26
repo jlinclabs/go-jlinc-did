@@ -2,7 +2,6 @@ package did
 
 import (
 	"crypto/ed25519"
-	"encoding/json"
 	"fmt"
 	"time"
 )
@@ -26,7 +25,7 @@ type pubkey struct {
 	PublicKeyBase58 string `json:"publicKeyBase58"`
 }
 
-func makeDidDoc(ent entity) (doc []byte, sig string, err error) {
+func makeDidDoc(ent entity) (doc didDoc, sig string, err error) {
 	didId := "did:jlinc:" + ent.SigningPublicKey
 	created := fmt.Sprintf("%s", time.Now().UTC().Format(ISOStringMillisec))
 
@@ -54,16 +53,11 @@ func makeDidDoc(ent entity) (doc []byte, sig string, err error) {
 	pubkeys = append(pubkeys, encrypting)
 	didDocument.PublicKeys = pubkeys
 
-	doc, err = json.Marshal(didDocument)
-	if err != nil {
-		return nil, "", err
-	}
-
-	toBeSigned := didId + created
+	toBeSigned := didId + "." + created
 	toBeSignedHashed := getHash(toBeSigned)
 	signer := b64Decode(ent.SigningPrivateKey)
 	signature := ed25519.Sign(signer, toBeSignedHashed)
 	sig = b64Encode(signature)
 
-	return doc, sig, nil
+	return didDocument, sig, nil
 }
