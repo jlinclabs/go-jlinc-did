@@ -1,4 +1,4 @@
-# Node JLINC
+# Go JLINC DID
 
 A go client for the JLINC DID Server
 
@@ -82,5 +82,7 @@ err := json.Unmarshal([]byte(jsonForSaving), &reified)
 
 ## TODO
   resolve a DID
+
   supersede a DID
+  
   get a DID's history
