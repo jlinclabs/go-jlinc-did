@@ -1,32 +1,32 @@
 package did
 
-import "log"
+const contextUrl = "https://www.w3.org/ns/did/v1"
 
-type PrivateDidData struct {
-	SigningPublicKey     string
-	SigningPrivateKey    string
-	EncryptingPublicKey  string
-	EncryptingPrivateKey string
-	RegistrationSecret   string
-	DID                  string
-}
-
-func RegisterDID(regAddr string) (string, error) {
-	entity, err := createEntity()
+func RegisterDID(regAddr string) (dataJson string, err error) {
+	ent, err := createEntity()
 	if err != nil {
 		return "", err
 	}
 
-	did, err := makeDidDoc(entity)
+	didDoc, sig, err := makeDidDoc(ent)
 	if err != nil {
 		return "", err
 	}
 
-	dataJson, err := register(did)
+	serverPubkey, err := serverKey(regAddr)
 	if err != nil {
 		return "", err
 	}
 
-	log.Printf("entity: %v", entity)
+	registrantSecret, registrantNonce, err := createRegistrantSecret(serverPubkey, ent)
+	if err != nil {
+		return "", err
+	}
+
+	dataJson, err = register(regAddr, serverPubkey, didDoc, sig, registrantSecret, registrantNonce, ent)
+	if err != nil {
+		return "", err
+	}
+
 	return dataJson, nil
 }
