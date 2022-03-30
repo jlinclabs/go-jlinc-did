@@ -112,7 +112,7 @@ func register(regAddr string, serverPubkey string, didDoc didDoc, sig string, re
 		SigningPrivateKey:    ent.SigningPrivateKey,
 		EncryptingPublicKey:  ent.EncryptingPublicKey,
 		EncryptingPrivateKey: ent.EncryptingPrivateKey,
-		RegistrationSecret:   ent.EncryptingPrivateKey,
+		RegistrationSecret:   ent.RegistrationSecret,
 		DID:                  cr.DID,
 	}
 	jsonToSave, err := json.Marshal(dataToSave)
